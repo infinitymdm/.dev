@@ -1,0 +1,8 @@
+# Generated files
+/public/
+/resources/_gen/
+/assets/jsconfig.json
+hugo_stats.json
+
+# Temporary lockfile
+/.hugo_build.lock

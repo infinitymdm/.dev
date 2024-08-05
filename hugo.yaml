@@ -1,0 +1,36 @@
+baseURL: 'https://infinitymdm.dev/'
+copyright: '© 2024 Marcus Mellor'
+env: 'production'
+languageCode: 'en-us'
+menus:
+    main:
+        - name: 'Blog'
+          pageRef: /blog
+          weight: 10
+        - name: 'About'
+          pageRef: /about
+          weight: 20
+        - name: 'Search'
+          pageRef: /search
+outputs:
+    home:
+        - html
+        - rss
+        - json
+params:
+    assets:
+        # favicon:
+        theme_color: '#bb9cc9'
+    author: 'Marcus Mellor'
+    dateFormat: "02 Jan 2006"
+    description: "Marcus Mellor's website and blog"
+    disableSpecial1stPost: true
+    homeInfoParams:
+        title: 'Hi there'
+        content: 'I guess I have a website now'
+    showReadingTime: true
+    socialIcons:
+        - name: 'github'
+          url: 'https://github.com/infinitymdm'
+theme: 'PaperMod'
+title: 'infinitymdm.dev'
