@@ -1,7 +1,7 @@
 ---
 title: 'About'
 date: 2024-08-05T16:11:01-05:00
-draft: true
+draft: false
 ---
 
 ## Who are you?

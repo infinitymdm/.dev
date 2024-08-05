@@ -1,6 +1,6 @@
 ---
 date: "2024-08-05T10:18:02-05:00"
-draft: true
+draft: false
 title: "Surprise, it's a Blog!"
 ---
 
