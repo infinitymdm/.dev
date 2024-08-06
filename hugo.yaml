@@ -19,8 +19,7 @@ outputs:
         - json
 params:
     assets:
-        # favicon:
-        theme_color: '#bb9cc9'
+        favicon: '/assets/favicon/favicon-32x32.png'
     author: 'Marcus Mellor'
     dateFormat: "02 Jan 2006"
     description: "Marcus Mellor's website and blog"
