@@ -18,8 +18,6 @@ outputs:
         - rss
         - json
 params:
-    assets:
-        favicon: '/assets/favicon/favicon-32x32.png'
     author: 'Marcus Mellor'
     dateFormat: "02 Jan 2006"
     description: "Marcus Mellor's website and blog"
@@ -31,5 +29,7 @@ params:
     socialIcons:
         - name: 'github'
           url: 'https://github.com/infinitymdm'
+        - name: 'rss'
+          url: 'https://infinitymdm.dev/index.xml'
 theme: 'PaperMod'
 title: 'infinitymdm.dev'

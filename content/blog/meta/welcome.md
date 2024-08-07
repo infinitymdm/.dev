@@ -2,9 +2,14 @@
 date: "2024-08-05T10:18:02-05:00"
 draft: false
 title: "Surprise, it's a Blog!"
+categories:
+    - meta
+tags:
+    - about
+    - goals
 ---
 
-## Hello There
+## Hello There!
 
 If you're reading this, it means I finally started up that website I've been talking about for
 ages. I'm just as surprised as you! I didn't think I would ever get around to it, but here we are.
@@ -70,11 +75,11 @@ While paper reviews are one of the primary goals here, I'll also post about othe
 like to at least occasionally post about the state of my Linux distro of choice, Solus. Maybe I'll
 even do the occasional book or video game review. Who knows what the future holds?
 
-### About Me
+### About
 
 This section will contain a brief bio, as well as a portfolio of my past projects. I'm thinking I
-could also have my resume linked, as well as links to the handful of other places I can be found on
-the internet.
+could also have my CV linked, as well as links to the handful of other places I can be found on the
+internet.
 
 Projects should be a big part of this section, too. Maybe I'll have a little showcase gallery or
 something like that to demonstrate cool stuff I've worked on, with some demo gifs of tools I've
