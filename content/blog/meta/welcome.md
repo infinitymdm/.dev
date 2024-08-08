@@ -14,6 +14,8 @@ tags:
 If you're reading this, it means I finally started up that website I've been talking about for
 ages. I'm just as surprised as you! I didn't think I would ever get around to it, but here we are.
 
+<!--more-->
+
 There are a handful of reasons I decided it was time to finally kick off this project. Here are a
 few of the big ones, in no particular order:
 - It provides a centralized place to post about my research publications (and cool things I do that
