@@ -241,22 +241,102 @@ if we just, y'know, didn't do all this characterization stuff? Unfortunately for
 engineers like you and me, there are good reasons behind the standard cell characterization
 process. It all comes down to the need for faster logic.
 
-Consider a small design like this:
+If you've ever looked into how a computer works, you know that a processor runs at a certain clock
+speed. Each time the clock ticks, the processor executes one instruction; that is, it completes one
+small task, such as adding two numbers or storing something for later use. The speed of a processor
+is limited by the amount of time it takes to complete one instruction; if the clock ticks before
+execution is done, data can be lost. This limiting factor is usually the slowest physical path
+through the processor's execution unit, and is called the **critical path**.
+
+> This is a HUGE oversimplification of how a processor works. If you're interested in learing more,
+I recommend David Harris and Sarah Harris's textbook [Digital Design and Computer Architecture](TODO).
+I've linked the RISC-V Edition, but there are other editions out there for other architectures like
+ARM and MIPS.
+
+So as logic designers, if we want faster execution we must be aware of the critical path in our
+designs. We *could* perform transistor-level simulation after every single change we make to a
+design, but this is really slow and gives more detail than we actually need most of the time. We
+usually just want to know if we have any chance of meeting timing specifications. With
+characterized standard cells, we can quickly and easily identify the critical path in a design
+because we know how much delay each cell introduces, and how much each cell stretches out an input
+signal. We can start with the specifications of our input signals, step through each level of logic
+in our design, and end up with a pretty good estimate of how much time it takes that signal to
+propagate to the output. This is called **static timing analysis** or STA.
+
+The big advantage of STA is that it takes a miniscule fraction of the time that it takes to run
+transistor-level simulation. This means that we can iterate on designs much faster, and only run
+detailed simulation when we're pretty confident our design is ready to be manufactured. This saves
+a ton of compute cycles, making characterization very worthwhile.
+
+### Putting it all together: Static Timing Analysis
+
+Suppose you have a small design like the one pictured below. Nothing too complicated. You just want
+to know whether it will meet your timing requirements.
 
 > TODO: add picture of a design that has some fanout to it
 
 See how we have the output of one gate driving the inputs to several other gates? Each of those
 gates has a very small amount of **input capacitance**. They don't have much on their own, but
 when they connect in parallel like this it can become significant. Together they act a lot like one
-larger capacitor on the output of the driving gate. Perhaps you can see where I'm going with this.
+larger capacitor on the output of the driving gate. Does that sound familiar? Perhaps you can guess
+where we're headed.
 
-When the first logic gate receives an input, the signal will propagate through it and incur some
-amount of delay. If we know how many cells it has to drive, we can sum up their input capacitance
-and **accurately predict how much delay the cell incurs**. We repeat this for each logic gate,
-using our previous characterization results to inform how much delay we need to add at each logic
-step. Using this method, we can reliably estimate the total delay between any 2 points in our
-design.
+Recall how we took our characterization measurements: we fed in a signal with a known slew rate,
+then measured the delay associated with charging a load capacitor. Now we're going to use those
+measurements to estimate delay. We zoom in on a single cell, add up the input capacitance of all
+the pins it drives on other cells, then look up how much propagation delay and transient delay the
+cell adds to the input signal. The transient delay becomes the slew rate for the next level of
+logic gates, and we can keep track of the propagation delay by adding it up as we step through our
+design one layer at a time. By the time we get to the output, we know exactly how long our critical
+path is. Hooray for knowledge!
 
-## CharLib
+> TODO: add picture showing how delays add up at each level of logic in the design
 
-Now that we understand standard cell characterization, we can dig into this paper.
+We've covered a *lot* of information here. If you're still with me, please give your brain a minute
+to digest all of that.
+
+Now that we understand standard cell characterization, we can dig into this paper. As it turns out,
+understanding the background is the hard part here. The paper is pretty straightforward after that.
+
+## CharLib: An Open Source Standard Cell Library Characterizer
+
+This paper, published in the proceedings of the 2024 Midwest Symposium on Circiuts and Systems,
+describes a new standard cell characterizer written in the Python programming language. It's open
+source and designed to be simple to use.
+
+The innovation here isn't in the details of the characterization process. That's mostly the same as
+what other open source characterizers have been doing for years. Instead, CharLib introduces a new
+way of handling standard cell information with the goal of making characterization easier and more
+consistent.
+
+### A shift in perspective
+
+> TODO: Talk about how existing tools typically work. 
+
+Existing characterizers follow a typical paradigm. You more or less tell the tool where each
+individual cell is, then load the tool with information about that cell, then tell it to run a
+specific procedure. This is a pretty manual process, with the tool only handling the actual
+simulation automatically.
+
+For example TODO
+
+CharLib, instead, tries to automate the entire process. Cell information is treated like metadata,
+which can be stored with cell netlists or in a centralized configuration file for the whole cell
+library. Instead of configuring the tool every time you run characterization, you describe your
+cell library once, then you can use that configuration any time you want to run characterization.
+It's a shift from prescriptive programming to descriptive.
+
+One of the big advantages of this is that you can store cell information relavant to
+characterization alongside your cells. This makes everything simple and bite-sized: you don't have
+to have one massive script that handles all the cells in the library. (Maybe someday you'll even be
+able to store characterization metadata in the cell netlist, using a special comment format or
+something. That could be pretty cool.)
+
+CharLib also tries to minimize the amount of work you have to do by letting you set library-wide
+defaults that cascade down to all cells. There is some information that's different for every cell,
+of course. Those items are required to be documented on each cell. But everything else - even test
+conditions like slew rates and capacitive loads - can be easily set once for the whole library. You
+can still override library defaults by specifying settings on a per-cell basis, of course.
+
+### Nuts and Bolts
+
