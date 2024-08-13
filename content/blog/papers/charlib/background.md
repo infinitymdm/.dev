@@ -1,7 +1,6 @@
 ---
-title: 'Laymanized | "CharLib: An Open Source Standard Cell Library Characterizer"'
+title: 'Laymanized | CharLib Part 1: Background'
 date: 2024-08-07T14:16:52-05:00
-draft: true
 categories:
     - laymanized
     - paper review
@@ -15,9 +14,8 @@ tags:
 math: true
 ---
 
-In this first entry in the [Laymanized]({{< ref "/categories/laymanized" >}}) series, we'll take a
-look at my first publication and dive into the topic of standard cell characterization.
-
+Before we dig into the details of this paper, let' cover some important information you'll need to
+understand.
 
 <!--more-->
 
@@ -39,16 +37,17 @@ Ok, disclaimer over. Let's get into this.
 I'm going to assume that you, as an intellectual, have some knowledge going into this. Probably a
 big part of why you clicked on this article, right?
 
-- You should have at least a basic understanding of Boolean logic
-- You should be able to identify the components of a circuit diagram (including logic gates) and
-know how they work on a basic level
 - You should know how to read a line graph
-- You should be aware of hardware descriptons languages such as verilog or VHDL (but don't worry,
-we won't be working with any code here)
+- You should have at least a basic understanding of [Boolean algebra](https://en.wikipedia.org/wiki/Boolean_algebra)
+- You should be able to identify the components of a [circuit diagram](https://en.wikipedia.org/wiki/Circuit_diagram)
+(including [logic gates](https://en.wikipedia.org/wiki/Logic_gate)) and know how they work on a
+basic level
+- You should be aware of [hardware descriptons languages (aka HDL)](https://en.wikipedia.org/wiki/Hardware_description_language)
+such as verilog or VHDL (but don't worry, we won't be working with any code here)
 
 Now that that's out of the way...
 
-## Let's Start with a bit of Background
+## Let's start with a bit of background
 
 Even if you've studied electronics at a university level, odds are pretty good that this is your
 first time hearing the term "standard cell", let alone paired with "library" and "characterizer".
@@ -78,7 +77,7 @@ place them in rows (like bricks) to get a clean, organized design. A master engi
 stonemason) could likely do a better job without those rows, but it would probably take them so
 long that it isn't worth the cost and effort.
 
-![brick vs cell meme](brick_vs_cell.png "I don't see a difference here. | cell image from vlsitechnology.org")
+![brick vs cell meme](../brick_vs_cell.png "I don't see a difference here. | cell image from vlsitechnology.org")
 
 If that analogy didn't make sense to you, maybe this way of thinking about it will. Think of
 standard cells like Lego bricks: they all have the same height, and they connect in predictable
@@ -103,13 +102,14 @@ a standard cell library like a toolbox full of devices for working with digital 
 
 Seems pretty straightforward, right? But consider how powerful this idea is! With a standard cell
 library, I can take *any digital logic design* and turn it into a real physical design. We even
-have automated tools to do this. You hand the tool a standard cell library and some HDL, and the
-tool "synthesizes" your design using the cells in the standard cell library.
+have automated software tools to do this. You hand the tool a standard cell library and some HDL,
+and the tool "[synthesizes](https://en.wikipedia.org/wiki/Logic_synthesis)" your design using the
+cells in the standard cell library.
 
 > If you're working with a standard cell library, you've probably come across the term "process
-design kit" (or PDK for short). A PDK is a larger set of documents, tools, and design
-data relavant to a particular semiconductor manufacturing process. For an example, check out
-[this open source PDK based on SkyWater's 130nm process](https://github.com/google/skywater-pdk).
+design kit" (or PDK for short). A [PDK](https://en.wikipedia.org/wiki/Process_design_kit) is a
+larger set of documents, tools, and design data relavant to a particular semiconductor manufacturing
+process. For an example, check out [this open source PDK based on SkyWater's 130nm process](https://github.com/google/skywater-pdk).
 >
 > Don't get confused: a standard cell library is not the same thing as a PDK. Usually a PDK will
 contain a standard cell library, but it's just a small part of a much bigger collection of tools.
@@ -131,8 +131,8 @@ just apply to electronics, of course. You can characterize all sorts of things i
 ways. I can characterize an apple as sweet and crisp. Or I could characterize an Apple as a thin
 and light laptop with a retina screen and an M3 processor.
 
-Of course, in the context of standard cells, we want very specific information. **Standard cell
-characterization is the process of measuring how a cell shapes signals input signals**.
+But in the context of standard cells, we want very specific information. **Standard cell
+characterization is the process of measuring how a cell shapes signals**.
 
 Let's pause and unpack that a bit. What do we mean when we talk about shaping input signals? 
 
@@ -147,7 +147,7 @@ you the exact same value you put into it.
 Now let's say I connect the input of a buffer to a signal generator, connect the output to a small
 capacitor, and feed in a signal that slews from 0 to 1 over a very short amount of time, like this:
 
-![buffer input signal plot](buf_input_rise.png "Let's see how that buffer handles this! (cue maniacal laughter)")
+![buffer input signal plot](../buf_input_rise.png "Let's see how that buffer handles this! (cue maniacal laughter)")
 
 We can expect the output to look exactly the same, right? Well, almost. Reality is a bit more
 complicated than that. Take a look at the simulation results below. 
@@ -155,7 +155,7 @@ complicated than that. Take a look at the simulation results below.
 > For completeness: these plots are generated using CharLib with the standard cells in the open
 source [gf180mcu_osu_sc PDK](https://github.com/stineje/globalfoundries-pdk-libs-gf180mcu_osu_sc).
 
-![buffer input and output signal plots](buf_io_rise.png "Look at all that delay. Reality is a bummer sometimes.")
+![buffer input and output signal plots](../buf_io_rise.png "Look at all that delay. Reality is a bummer sometimes.")
 
 As it turns out, the buffer introduces a little bit of delay to the signal; it takes time for the
 change in the input signal to "propagate" through to the output signal. This is called the
@@ -164,15 +164,15 @@ change in the input signal to "propagate" through to the output signal. This is 
 It also takes a little longer for the output signal to transition from 0 to 1 than the input signal
 does. This is called the "transient delay", or \\(t_{trans}\\).
 
-![buffer circuit configuration and timings](buf_timings_abstract.png)
+![buffer circuit configuration and timings](../buf_timings_abstract.png)
 
 Both of these values change depending on the structure of the standard cell we're testing, the
 amount of capacitance we connect to the output (\\(c_{load}\\)), and the amount of time we give the
 input signal to slew (\\(t_{slew}\\)), among many other factors.
 
-For combinational cells (logic gates, buffers, inverters... pretty much anything that doesn't
-require a clock input for sequencing), these two delay characteristics provide a pretty good model
-of how the cell will respond to input.
+For [combinational](https://en.wikipedia.org/wiki/Combinational_logic) cells (logic gates, buffers,
+inverters... pretty much anything that doesn't require a clock input for sequencing), these two
+delay characteristics provide a pretty good model of how the cell will respond to input.
 
 But what if we feed in an input signal that transitions faster or slower? Or what if we put a
 larger capacitor on the output, so that the cell has to do more work in order to charge it to a
@@ -181,7 +181,8 @@ logical 1?
 ### Changing conditions
 
 If we want to have a good model of how our buffer shapes signals, we need to take measurements
-under a bunch of different conditions. Those conditions include (at minimum):
+under a bunch of different conditions. So we change the test configuration by adjusting the
+parameters listed below (at minimum):
 
 - \\(t_{slew}\\), the amount of time the input signal takes to "slew" or transition from 0 to 1.
 This is also known as the slew rate. It's usually measured in nanoseconds or picoseconds.
@@ -194,7 +195,7 @@ This is where things start to get complicated. We want to see how varying both o
 results in a 3-dimensional *surface* of data for each delay value we want to measure. Our test
 conditions are shown along the x and y axes, and the delay is plotted on the z-axis.
 
-![buffer timing simulation results with varying fanout and slew rate](buf_timings_rise_surface.png "This chart shows how both types of delay are affected by varying our test conditions. Pretty neat, huh?")
+![buffer timing simulation results with varying fanout and slew rate](../buf_timings_rise_surface.png "This chart shows how both types of delay are affected by varying our test conditions. Pretty neat, huh?")
 
 ### This isn't as easy as it sounds
 
@@ -211,8 +212,8 @@ signals in different ways.
 1 (otherwise it would "mask" the signal, and we would never see it propagate through to the output).
 We call this the "nonmasking condition" for input B.
 
-This is still just a simple gate, of course. Sequential devices, such as latches and flip-flops,
-add a boatload of extra problems:
+This is still just a simple gate, of course. [Sequential devices](https://en.wikipedia.org/wiki/Sequential_logic),
+such as latches and flip-flops, add a boatload of extra problems:
 
 - We now have to stimulate the cell with a clock signal that has an appropriate period and slew
 rate, in addition to stimulating the inputs.
@@ -244,12 +245,12 @@ process. It all comes down to the need for faster logic.
 If you've ever looked into how a computer works, you know that a processor runs at a certain clock
 speed. Each time the clock ticks, the processor executes one instruction; that is, it completes one
 small task, such as adding two numbers or storing something for later use. The speed of a processor
-is limited by the amount of time it takes to complete one instruction; if the clock ticks before
-execution is done, data can be lost. This limiting factor is usually the slowest physical path
-through the processor's execution unit, and is called the **critical path**.
+(or any logic design) is limited by the amount of time it takes to complete one instruction; if the
+clock ticks before execution is done, data can be lost. This limiting factor is usually the slowest
+physical path through the processor's execution unit, and is called the **critical path**.
 
 > This is a HUGE oversimplification of how a processor works. If you're interested in learing more,
-I recommend David Harris and Sarah Harris's textbook [Digital Design and Computer Architecture](TODO).
+I recommend David Harris and Sarah Harris's textbook [Digital Design and Computer Architecture](https://shop.elsevier.com/books/digital-design-and-computer-architecture-risc-v-edition/harris/978-0-12-820064-3).
 I've linked the RISC-V Edition, but there are other editions out there for other architectures like
 ARM and MIPS.
 
@@ -261,7 +262,7 @@ characterized standard cells, we can quickly and easily identify the critical pa
 because we know how much delay each cell introduces, and how much each cell stretches out an input
 signal. We can start with the specifications of our input signals, step through each level of logic
 in our design, and end up with a pretty good estimate of how much time it takes that signal to
-propagate to the output. This is called **static timing analysis** or STA.
+propagate to the output. This is called [**static timing analysis** or STA](https://en.wikipedia.org/wiki/Static_timing_analysis).
 
 The big advantage of STA is that it takes a miniscule fraction of the time that it takes to run
 transistor-level simulation. This means that we can iterate on designs much faster, and only run
@@ -273,7 +274,7 @@ a ton of compute cycles, making characterization very worthwhile.
 Suppose you have a small design like the one pictured below. Nothing too complicated. You just want
 to know whether it will meet your timing requirements.
 
-> TODO: add picture of a design that has some fanout to it
+![picture of a design with some fanout](../fanout.png "Yeah, this design doesn't do anything helpful.")
 
 See how we have the output of one gate driving the inputs to several other gates? Each of those
 gates has a very small amount of **input capacitance**. They don't have much on their own, but
@@ -283,60 +284,25 @@ where we're headed.
 
 Recall how we took our characterization measurements: we fed in a signal with a known slew rate,
 then measured the delay associated with charging a load capacitor. Now we're going to use those
-measurements to estimate delay. We zoom in on a single cell, add up the input capacitance of all
-the pins it drives on other cells, then look up how much propagation delay and transient delay the
-cell adds to the input signal. The transient delay becomes the slew rate for the next level of
-logic gates, and we can keep track of the propagation delay by adding it up as we step through our
-design one layer at a time. By the time we get to the output, we know exactly how long our critical
-path is. Hooray for knowledge!
+measurements to estimate delay. 
 
-> TODO: add picture showing how delays add up at each level of logic in the design
+![fanout modeled as capacitance](../fanout_modeling.png "The best part is we get to ignore 90% of the circuit.")
 
-We've covered a *lot* of information here. If you're still with me, please give your brain a minute
-to digest all of that.
+First we zoom in on a single cell. Since we know the input capacitace of the cells it's driving,
+and all those cells are wired in parallel, we can add up those capacitances and model them as a
+single larger capacitor. Presumably our signal generator will also have some slew rate limit, so we
+can use that spec as our input slew rate. Since we now know \\(c_{load}\\) and \\(t_{slew}\\), we
+can look up the delays from the characterization data for this cell. We keep a tally of the total
+propagation delay, and use the transient delay as the input for the next logic layer.
 
-Now that we understand standard cell characterization, we can dig into this paper. As it turns out,
-understanding the background is the hard part here. The paper is pretty straightforward after that.
+We repeat this process for each layer of logic in our design, keeping track of delays and how they
+affect the signal feeding into the next layer. By the time we get to the output, we know exactly how
+long our critical path is. Hooray for STA!
 
-## CharLib: An Open Source Standard Cell Library Characterizer
+## Conclusion
 
-This paper, published in the proceedings of the 2024 Midwest Symposium on Circiuts and Systems,
-describes a new standard cell characterizer written in the Python programming language. It's open
-source and designed to be simple to use.
+We've covered a *lot* of information here. If you're still with me, give your brain a minute to
+digest all of that.
 
-The innovation here isn't in the details of the characterization process. That's mostly the same as
-what other open source characterizers have been doing for years. Instead, CharLib introduces a new
-way of handling standard cell information with the goal of making characterization easier and more
-consistent.
-
-### A shift in perspective
-
-> TODO: Talk about how existing tools typically work. 
-
-Existing characterizers follow a typical paradigm. You more or less tell the tool where each
-individual cell is, then load the tool with information about that cell, then tell it to run a
-specific procedure. This is a pretty manual process, with the tool only handling the actual
-simulation automatically.
-
-For example TODO
-
-CharLib, instead, tries to automate the entire process. Cell information is treated like metadata,
-which can be stored with cell netlists or in a centralized configuration file for the whole cell
-library. Instead of configuring the tool every time you run characterization, you describe your
-cell library once, then you can use that configuration any time you want to run characterization.
-It's a shift from prescriptive programming to descriptive.
-
-One of the big advantages of this is that you can store cell information relavant to
-characterization alongside your cells. This makes everything simple and bite-sized: you don't have
-to have one massive script that handles all the cells in the library. (Maybe someday you'll even be
-able to store characterization metadata in the cell netlist, using a special comment format or
-something. That could be pretty cool.)
-
-CharLib also tries to minimize the amount of work you have to do by letting you set library-wide
-defaults that cascade down to all cells. There is some information that's different for every cell,
-of course. Those items are required to be documented on each cell. But everything else - even test
-conditions like slew rates and capacitive loads - can be easily set once for the whole library. You
-can still override library defaults by specifying settings on a per-cell basis, of course.
-
-### Nuts and Bolts
-
+Take some time to review what you need. When you feel prepared, move on to part 2. There we'll go
+into detail on the charization process (coming soon!).
