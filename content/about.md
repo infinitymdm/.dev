@@ -23,3 +23,8 @@ science fiction), and using tools on things (hopefully constructively).
 - I was once hospitalized in a game of Duck Duck Goose
 - My favorite video game series is Xenoblade Chronicles
 - I can fit 18 grapes in my mouth at once
+
+## Got a question?
+
+If you have any questions or concerns for me, feel free to [send me an email](mailto:me@infinitymdm.dev).
+(I won't be offended if you point out my typos, promise.)
