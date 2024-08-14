@@ -164,7 +164,7 @@ change in the input signal to "propagate" through to the output signal. This is 
 It also takes a little longer for the output signal to transition from 0 to 1 than the input signal
 does. This is called the "transient delay", or \\(t_{trans}\\).
 
-![buffer circuit configuration and timings](../buf_timings_abstract.png)
+![buffer circuit configuration and timings](../buf_timings_abstract.png "This is more or less what you'd see if you connected an oscilloscope to a circuit like this.")
 
 Both of these values change depending on the structure of the standard cell we're testing, the
 amount of capacitance we connect to the output (\\(c_{load}\\)), and the amount of time we give the
@@ -206,8 +206,8 @@ complicated, we have problems to solve.
 For example, consider a simple 2-input AND gate. It's not a complicated device, by any stretch of
 the imagination. But since it has 2 inputs, we have to deal with some additional complexities:
 
-- There are now paths through the gate (one path from each input to the output), and each may shape
-signals in different ways.
+- There are now multiple paths through the gate (one path from each input to the output), and each
+may shape signals in different ways.
 - If we're testing the path from input A to the output, we have to make sure input B has a logical
 1 (otherwise it would "mask" the signal, and we would never see it propagate through to the output).
 We call this the "nonmasking condition" for input B.
@@ -305,4 +305,4 @@ We've covered a *lot* of information here. If you're still with me, give your br
 digest all of that.
 
 Take some time to review what you need. When you feel prepared, move on to part 2. There we'll go
-into detail on the charization process (coming soon!).
+into detail on the characterization process (coming soon!).
