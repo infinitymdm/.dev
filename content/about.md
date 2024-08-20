@@ -17,14 +17,19 @@ I'm a chronic tinkerer and a Linux enthusiast, though I admit I only know enough
 my own computers. My hobbies include playing video games with my friends, reading (especially
 science fiction), and using tools on things (hopefully constructively).
 
-### Fun Facts
+### Fun Facts about Me
 
 - I have spent more money on Lego sets than I care to admit
 - I was once hospitalized in a game of Duck Duck Goose
 - My favorite video game series is Xenoblade Chronicles
 - I can fit 18 grapes in my mouth at once
 
+## What is this website?
+
+This website is mostly a place for me to talk about work I'm doing or cool stuff others have done.
+If you want to know more about my goals here, [check out my very first post.](/blog/meta/welcome)
+
 ## Got a question?
 
-If you have any questions or concerns for me, feel free to [send me an email](mailto:me@infinitymdm.dev).
-(I won't be offended if you point out my typos, promise.)
+Think I missed a key point in some explanation? Found a typo you want fixed? Got a project you
+think I'd be interested in? Feel free to [send me an email](mailto:me@infinitymdm.dev).
