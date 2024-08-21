@@ -35,6 +35,11 @@ basic level
 - You should be aware of [hardware descriptons languages (aka HDL)](https://en.wikipedia.org/wiki/Hardware_description_language)
 such as verilog or VHDL (but don't worry, we won't be working with any code here)
 
+There's a lot of technical stuff listed there, but don't be intimidated. Even if you aren't super
+familiar with some of these concepts, I'd encourage you to read on anyways. If you find yourself
+getting confused, take a step back and review. I've tried to provide helpful links up above. As
+always, if you have questions you can [send me an email](mailto:me@infinitymdm.dev?subject=Question%20about%20CharLib).
+
 Now that that's out of the way...
 
 ## Let's start with a bit of background
