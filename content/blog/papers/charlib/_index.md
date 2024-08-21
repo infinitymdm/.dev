@@ -18,8 +18,21 @@ look at my first publication and dive into the topic of standard cell characteri
 
 <!--more-->
 
+### First, a brief Disclaimer
+
+I do NOT intend for this site to be exclusively a showcase for my own work. I want to talk about
+all sorts of stuff from all sorts of people, like [David Harvey's optimizations to NTT](https://www.sciencedirect.com/science/article/pii/S0747717113001181)
+or [David Harris's taxonomy for parallel prefix networks](https://ieeexplore.ieee.org/abstract/document/1292373).
+(Also, I'm not just going cover works from people named David H. This was a coincidence, I 
+promise). However, if I'm going to try to explain difficult and complex VLSI topics, it's nice
+to start with stuff I know.
+
+Ok, disclaimer over. Let's get into this.
+
+### Organization
+
 This entry is broken up into three parts.
-- In the [first part](/background), we'll go over background information you'll need in order to
+- In the [first part](./background), we'll go over background information you'll need in order to
 understand the paper.
 - In the next part (coming soon), we'll look at how CharLib works under the hood.
 - In the third and final part (coming a little less soon), we'll compare CharLib to other standard

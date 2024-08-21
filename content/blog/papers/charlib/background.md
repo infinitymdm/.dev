@@ -12,30 +12,20 @@ tags:
     - FOSS
     - EDA
 math: true
+ShowToc: true
 ---
 
-Before we dig into the details of this paper, let' cover some important information you'll need to
+Before we dig into the details of this paper, let's cover some important information you'll need to
 understand.
 
 <!--more-->
-
-### First, a brief Disclaimer
-
-I do NOT intend for this site to be exclusively a showcase for my own work. I want to talk about
-all sorts of stuff from all sorts of people, like [David Harvey's optimizations to NTT](https://www.sciencedirect.com/science/article/pii/S0747717113001181)
-or [David Harris's taxonomy for parallel prefix networks](https://ieeexplore.ieee.org/abstract/document/1292373).
-(Also, I'm not just going cover works from people named David H. This was a coincidence, I 
-promise). However, if I'm going to try to explain difficult and complex VLSI topics, it's nice
-to start with stuff I know.
-
-Ok, disclaimer over. Let's get into this.
 
 ### Some Assumptions
 
 ![xkcd when you assume](https://imgs.xkcd.com/comics/when_you_assume.png "I'm aware of the risk I'm taking here. | xkcd.com/1339")
 
-I'm going to assume that you, as an intellectual, have some knowledge going into this. Probably a
-big part of why you clicked on this article, right?
+I'm going to assume that you, an intellectual, have some knowledge going into this. Probably a big
+part of why you clicked on this article, right?
 
 - You should know how to read a line graph
 - You should have at least a basic understanding of [Boolean algebra](https://en.wikipedia.org/wiki/Boolean_algebra)
