@@ -1,5 +1,5 @@
 ---
-title: 'Laymanized | "CharLib: An Open Source Standard Cell Library Characterizer"'
+title: 'Laymanized: "CharLib: An Open Source Standard Cell Library Characterizer"'
 date: 2024-08-07T14:16:52-05:00
 categories:
     - laymanized
@@ -42,7 +42,4 @@ CharLib is an open source project and can be found [here on GitHub](https://gith
 I wrote it over the course of about a year, building on ideas from several existing works and with
 lots of input from my advisor, Dr. James Stine.
 
-You can find the paper in the proceedings of the 2024 IEEE Midwest Symposium on Circuits and Systems.
-
-> At the time of writing, the publication is not yet publicly available. I'll update this soon with
-a link.
+[You can find the paper here in the proceedings of the 2024 IEEE Midwest Symposium on Circuits and Systems.](https://ieeexplore.ieee.org/abstract/document/10658687)

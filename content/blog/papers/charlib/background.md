@@ -1,5 +1,5 @@
 ---
-title: 'Laymanized | CharLib Part 1: Background'
+title: 'Part 1: Background'
 date: 2024-08-07T14:16:52-05:00
 categories:
     - laymanized
@@ -19,6 +19,10 @@ Before we dig into the details of this paper, let's cover some important informa
 understand.
 
 <!--more-->
+
+> *Feeling a bit lost?* This article is the first part in a series on the paper "Charlib: An Open
+Source Standard Cell Library Characterizer". If you're looking for the other parts, or the paper
+itself, [click here](..).
 
 ### Some Assumptions
 

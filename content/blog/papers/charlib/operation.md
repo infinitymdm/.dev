@@ -1,14 +1,14 @@
 ---
-title: 'Laymanized | CharLib Part 2: How it Works'
+title: 'Part 2: How it Works'
 date: 2024-08-07T14:16:52-05:00
 draft: true
 math: true
 ---
 
-Now that we understand standard cell characterization, we can dig into this paper. As it turns out,
-understanding the background is the hard part here.
+Now that we understand standard cell characterization, we can actually look at the paper. As it
+turns out, understanding the background is the hardest part here.
+
 <!--more-->
-The paper is pretty straightforward after that.
 
 ## CharLib: An Open Source Standard Cell Library Characterizer
 
@@ -33,6 +33,8 @@ script using Cadence Liberate's domain-specific commands. There are commands for
 data, defining paths through cells, defining test conditions, and much more. Learning all those
 commands takes time, and characterization has to be kicked off manually.
 
+> TODO: concrete example of Cadence characterization script. 
+
 CharLib, instead, tries to automate the entire process. Cell information is treated like metadata,
 which can be stored with cell netlists or in a centralized configuration file for the whole cell
 library. Instead of configuring the tool every time you run characterization, you describe your
@@ -51,11 +53,21 @@ of course. Those items are required to be documented on each cell. But everythin
 conditions like slew rates and capacitive loads - can be easily set once for the whole library. You
 can still override library defaults by specifying settings on a per-cell basis, of course.
 
+> TODO: concrete example of charlib configuration file
+
+That's not to say that CharLib perfectly automates everything, of course. You still have to write
+a config file for your cell library, and that means you'll still need all the same information that
+would have gone into a script for a different tool. The difference is that instead of learning
+commands specific to the tool, you're documenting your cell library in a way that CharLib knows how
+to read. Since this is simple, descriptive information, there's no reason that other tools can't
+use this information as well. Everyone benefits from documentation, but only a single tool can use
+a script.
+
 ### Section II: Nuts and Bolts
 
 When it comes to characterization itself, CharLib doesn't do anything new. It uses tried-and-true
 methods to characterize cells, leaning on the work of previous open-source characterizers such as
-[libretto](https://search.ieice.org/bin/summary.php?id=e106-a_3_551) and
+[libretto](https://github.com/snishizawa/libretto) and
 [lctime](https://codeberg.org/librecell/lctime). But just for fun, let's take a closer look at how
 it works.
 
@@ -97,7 +109,7 @@ works for arbitrary combinational logic functions. Sequential cells are a little
 because of their internal state, but the same general principle applies. Here's a flowchart showing
 the full process.
 
-![Test arc identification flowchart](test_arc_flowchart.svg  "This is about as simple as it gets. This stuff is just plain difficult.")
+![Test arc identification flowchart](../test_arc_flowchart.svg  "This is about as simple as it gets. This stuff is just plain difficult.")
 
 Once we've figured out *how* to test our cell, we take a brief aside to measure cell capacitance.
 
