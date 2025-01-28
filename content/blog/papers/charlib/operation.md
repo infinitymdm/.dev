@@ -1,14 +1,28 @@
 ---
 title: 'Part 2: How it Works'
-date: 2024-08-07T14:16:52-05:00
-draft: true
+date: 2025-01-07T14:16:52-05:00
+categories:
+    - laymanized
+    - paper review
+tags:
+    - open source
+    - standard cell
+    - characterization
+    - tools
+    - FOSS
+    - EDA
 math: true
+ShowToc: true
 ---
 
 Now that we understand standard cell characterization, we can actually look at the paper. As it
 turns out, understanding the background is the hardest part here.
 
 <!--more-->
+
+> *Feeling a bit lost?* This article is the second part in a series on the paper "Charlib: An Open
+Source Standard Cell Library Characterizer". If you're looking for the other parts, or the paper
+itself, [click here](..).
 
 ## CharLib: An Open Source Standard Cell Library Characterizer
 
@@ -23,6 +37,8 @@ consistent.
 
 ### Section I: A shift in perspective
 
+#### The Current Flow: Tool-Specific Scripts
+
 Existing characterizers follow a typical paradigm. You more or less tell the tool where each
 individual cell is, then load the tool with information about that cell, then tell it to run a
 specific procedure. This is a pretty manual process, with the tool only handling the actual
@@ -31,21 +47,74 @@ simulation automatically.
 For example, if you wanted to characterize a cell library using Cadence tools, you would write a
 script using Cadence Liberate's domain-specific commands. There are commands for importing cell
 data, defining paths through cells, defining test conditions, and much more. Learning all those
-commands takes time, and characterization has to be kicked off manually.
+commands takes time, and characterization has to be kicked off manually. Take a look at this
+excerpt from some [example liberate scripts](https://gitee.com/chaujohnthan/liberate/blob/master/char.tcl):
 
-> TODO: concrete example of Cadence characterization script. 
+```tcl
+### Define temperature and default voltage ###
+set_operating_condition -voltage 1.5 -temp 125
 
-CharLib, instead, tries to automate the entire process. Cell information is treated like metadata,
-which can be stored with cell netlists or in a centralized configuration file for the whole cell
-library. Instead of configuring the tool every time you run characterization, you describe your
-cell library once, then you can use that configuration any time you want to run characterization.
-It's a shift from prescriptive programming to descriptive.
+## Load template information for each cell ##
+source ${rundir}/TEMPLATE/template_example.tcl
+
+set_var extsim_cmd "spectre2"
+
+## Load Spice models and subckts ##
+set spicefiles $rundir/MODELS/include_SS.sp
+foreach cell $cells {
+    lappend spicefiles ${rundir}/NETLIST/${cell}.sp
+}
+read_spice $spicefiles
+
+## Characterize the library for NLDM (default)
+char_library -thread 1 -extsim spectre2 -cells {INVX1}
+
+## Save characterization database for post-processing ##
+write_ldb ${rundir}/LDB/example.ldb
+
+## Generate a .lib with ccs, ecsm ###
+write_library -overwrite  ${rundir}/LIBRARY/example_nldm.lib
+```
+
+While the code itself is pretty well commented, I totally get it if your eyes glazed over the
+moment you saw that monospaced font. Basically the above code does the following:
+1. Set up a circuit simulator
+2. Load a library of standard cells (by calling a different script)
+3. Characterize the standard cell library
+
+That's a lot of code for such a small task. This script relies on a bunch of *additional* scripts
+as well; note the call to `template_example.tcl`, where all the cell slew rates and loads are set
+up. You can find those other scripts in the same repository linked up above. Credit where credit
+is due though; Cadence's tools do the job, and do it very well. The syntax is not exactly concise,
+but it's not too hard to tell what it's doing, either.
+
+All that said, there are a few things we wanted to improve on in designing CharLib's interface:
+- You should be able to run characterization from a single command-line call, without explicitly
+setting up the underlying tools every time (i.e. you shouldn't have to write scripts specifically
+for the tool).
+- You shouldn't have to rewrite "boilerplate" code every time you want to run characterization.
+It's obvious that the tool is going to have to do things like load cells every time you
+characterize, so that should be integrated into the process somehow.
+- You should be able to describe a cell library once and for all time, then reuse that description
+(even for other tools).
+
+With these goals in mind, it's easy to see why CharLib takes a different approach.
+
+#### The CharLib Flow: Tool-Agnostic Description
+
+CharLib instead operates by reading a description of the cell library. Cell information is treated
+like metadata which can be stored with cell netlists or in a centralized configuration file for the
+whole cell library. Instead of configuring the tool every time you run characterization, you
+describe your cell library once. Then you can use that configuration any time you want to
+characterize your library. It's a shift from prescriptive programming to descriptive.
 
 One of the big advantages of this is that you can store cell information relavant to
 characterization alongside your cells. This makes everything simple and bite-sized: you don't have
-to have one massive script that handles all the cells in the library. (Maybe someday you'll even be
-able to store characterization metadata in the cell netlist, using a special comment format or
-something. That could be pretty cool.)
+to have one massive script (or a script that calls other scripts that calls other scripts... you
+get the picture) that handles all the cells in the library. (Eventually CharLib may even let you
+store cell configuration right in the cell netlist using a special comment format! But I'm getting
+ahead of myself - watch the [CharLib Github](https://github.com/stineje/CharLib) if you're
+interested in new features or releases.)
 
 CharLib also tries to minimize the amount of work you have to do by letting you set library-wide
 defaults that cascade down to all cells. There is some information that's different for every cell,
@@ -53,11 +122,36 @@ of course. Those items are required to be documented on each cell. But everythin
 conditions like slew rates and capacitive loads - can be easily set once for the whole library. You
 can still override library defaults by specifying settings on a per-cell basis, of course.
 
-> TODO: concrete example of charlib configuration file
+For comparison, here's a complete example of a CharLib configuration file for library with a single
+inverter:
+
+```yml
+settings:
+    lib_name: GF180
+    cell_defaults:
+        models:
+            - gf180_temp/models/sm141064.ngspice typical
+            - gf180_temp/models/design.ngspice
+        slews:  [0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1]
+        loads:  [0.005, 0.01, 0.025, 0.05, 0.1]
+
+cells:
+    gf180mcu_osu_sc_gp12t3v3__inv_1:
+        netlist:    gf180_temp/cells/gf180mcu_osu_sc_gp12t3v3__inv_1.spice
+        inputs:     [A]
+        outputs:    ['Y']
+        functions:  [Y=~A]
+```
+
+This might also look like a lot of code for a small task, but consider that there are no other
+scripts hiding in the background: all the details are right here. Technically this code doesn't
+even *do* anything on its own - it just describes the cell library and simulation details. But
+if you pull up a terminal and run `charlib run /path/to/config`, charlib will ingest this
+configuration file and automatically characterize the cell.
 
 That's not to say that CharLib perfectly automates everything, of course. You still have to write
 a config file for your cell library, and that means you'll still need all the same information that
-would have gone into a script for a different tool. The difference is that instead of learning
+would have gone into a script for any other tool. The difference is that instead of learning
 commands specific to the tool, you're documenting your cell library in a way that CharLib knows how
 to read. Since this is simple, descriptive information, there's no reason that other tools can't
 use this information as well. Everyone benefits from documentation, but only a single tool can use
@@ -74,7 +168,7 @@ it works.
 The characterization process for any given cell happens in four steps. Each cell in the library has
 to go through this process.
 1. Identify Test Arcs
-2. Measure Input Capacitance
+2. Measure Input Capacitances
 3. Measure Delays
 4. Collect and Present Results
 
@@ -82,17 +176,25 @@ Let's go through what each of those means.
 
 #### Test Arc Identification
 
-For starters, what's a test arc? Simply put, a test arc is a path through a cell (from one input to
-one output) where all other cell inputs are set to nonmasking conditions and we can observe the
-state transition we want. Even for a simple explanation, that's pretty jargon-dense, so let's look
-at an example.
+For starters, what's a test arc? Simply put, a test arc is a path through a cell, from one input
+pin to one output. A good test arc will tests how changes to that one input affect the output,
+without letting other pins affect the test. That means a test arc has to capture
+1. Which input we're testing
+2. Which output we're testing
+3. A signal to feed into the input that will give us something to observe on the output
+4. A setup for all other inputs so that observation comes through unimpeded
 
-Let's say you want to characterize an OR cell. You start with the path from input A to the output,
-Y. But what do you do with input B? If you leave it disconnected, your simulation won't represent
-real-world usage well. But you can't just set it to a random value, because if you set it to logic
-1, the OR cell will always output 1. You have to set input B to zero in order to observe how the OR
-cell affects a signal on input A. So your test arc is the path from A to Y, with input B held
-stable at logic 0.
+Item 4 here is called the "nonmasking conditions" for the test arc, because it's the setup that
+will not hide, or "mask", the input signal from causing some observable change on the output.
+
+That's pretty jargon-dense, so let's look at an example.
+
+> Let's say you want to characterize an OR cell. You start with the path from input A to the
+output, Y. But what do you do with input B? If you leave it disconnected, your simulation won't
+represent real-world usage well. But you can't just set it to a random value, because if you set it
+to logic 1, the OR cell will always output 1. You have to set input B to zero in order to observe
+how the OR cell affects a signal on input A. So your test arc is the path from A to Y, with B=0 as
+the nonmasking condition.
 
 > TODO: image of OR gate being tested, with masking and nonmasking conditions shown
 
