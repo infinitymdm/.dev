@@ -37,7 +37,7 @@ consistent.
 
 ### Section I: A shift in perspective
 
-#### The Current Flow: Tool-Specific Scripts
+#### The Current Method: Tool-Specific Scripts
 
 Existing characterizers follow a typical paradigm. You more or less tell the tool where each
 individual cell is, then load the tool with information about that cell, then tell it to run a
@@ -100,7 +100,7 @@ characterize, so that should be integrated into the process somehow.
 
 With these goals in mind, it's easy to see why CharLib takes a different approach.
 
-#### The CharLib Flow: Tool-Agnostic Description
+#### The CharLib Method: Tool-Agnostic Description
 
 CharLib instead operates by reading a description of the cell library. Cell information is treated
 like metadata which can be stored with cell netlists or in a centralized configuration file for the
@@ -217,4 +217,32 @@ Once we've figured out *how* to test our cell, we take a brief aside to measure 
 
 #### Measuring Input Capacitance
 
-To measure capacitance, we model (aka pretend) that the cell is a capacitor connected to ground.
+To measure capacitance, we model (a.k.a. pretend) that the cell is a capacitor connected to ground.
+Then we do some funny business.
+
+I'm not going to try to explain Laplace transforms or Fourier analysis here; [other folks have done
+a really good job explaining those topics](https://www.youtube.com/watch?v=spUNpyF58BY). The gist
+of the approach here is this: if you generate an alternating current waveform with a particular
+frequency, then pass it through a capacitor, it will come out the other end slightly altered. With
+a little calculus, we can find the capacitance from the altered signal and our input current:
+
+$$
+    C = i_0 \frac{d}{d{s}} \left( \frac{1}{v(s)} \right)
+$$
+
+Don't worry too much about the math; suffice it to say that circuit simulators are really good at
+measuring voltage and current, and they do most of the work for us here. Under the hood, CharLib
+is just plugging in numbers and letting those tools give us the results.
+
+#### Delay Characterization
+
+Ok, at this stage we've figured out *how* to test our circuits (test arcs), and we've made a few
+initial measurements using the standard cell spice files, so we know they work. Now it's time to do
+the real work: measuring delays.
+
+The goal here is actually pretty simple: if we switch one of the circuit inputs from low to high
+(or vice versa) we want to measure how long it takes for that change to start showing up on the
+cell output (\\(t_{prop}\\)), as well as how long the output takes to change state
+(\\(t_{trans}\\)). However, as discussed in [part 1](../background/#changing-conditions), we have
+to take lots of measurements with varying \\(t_{slew}\\) and \\(c_{load}\\) in order to get a good
+model.
