@@ -32,4 +32,4 @@ If you want to know more about my goals here, [check out my very first post.](/b
 ## Got a question?
 
 Think I missed a key point in some explanation? Found a typo you want fixed? Got a project you
-think I'd be interested in? Feel free to [send me an email](mailto:me@infinitymdm.dev).
+think I'd be interested in? Feel free to [send me an email](mailto:marcus@infinitymdm.dev).

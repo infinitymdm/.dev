@@ -32,12 +32,14 @@ outputs:
         - json
 params:
     author: 'Marcus Mellor'
-    dateFormat: "02 Jan 2006"
+    label:
+        icon: "/android-chrome-512x512.png"
+    dateFormat: '02 Jan 2006'
     description: "Marcus Mellor's website and blog"
-    disableSpecial1stPost: true
+    disableSpecial1stPost: false
     homeInfoParams:
-        title: 'Hi there'
-        content: 'I guess I have a website now'
+        title: 'Welcome to infinitymdm.dev'
+        content: "Marcus Mellor's blog on technology, research, and other random musings"
     showReadingTime: true
     socialIcons:
         - name: 'github'
