@@ -82,11 +82,11 @@ moment you saw that monospaced font. Basically the above code does the following
 2. Load a library of standard cells (by calling a different script)
 3. Characterize the standard cell library
 
-That's a lot of code for such a small task. This script relies on a bunch of *additional* scripts
-as well; note the call to `template_example.tcl`, where all the cell slew rates and loads are set
-up. You can find those other scripts in the same repository linked up above. Credit where credit
-is due though; Cadence's tools do the job, and do it very well. The syntax is not exactly concise,
-but it's not too hard to tell what it's doing, either.
+That's a lot of code for such a small task. And that's not even half the code you have to write to
+run characterization; note the call to another script, `template_example.tcl`, where all the cell
+slew rates and loads are set up. You can find those other scripts in the same repository linked up
+above. Credit where credit is due though; Cadence's tools do the job, and do it very well. The
+syntax is not exactly concise, but it's not too hard to tell what it's doing, either.
 
 All that said, there are a few things we wanted to improve on in designing CharLib's interface:
 - You should be able to run characterization from a single command-line call, without explicitly
@@ -127,7 +127,7 @@ inverter:
 
 ```yml
 settings:
-    lib_name: GF180
+    lib_name: gf180mcu_osu_sc
     cell_defaults:
         models:
             - gf180_temp/models/sm141064.ngspice typical
@@ -145,8 +145,8 @@ cells:
 
 This might also look like a lot of code for a small task, but consider that there are no other
 scripts hiding in the background: all the details are right here. Technically this code doesn't
-even *do* anything on its own - it just describes the cell library and simulation details. But
-if you pull up a terminal and run `charlib run /path/to/config`, charlib will ingest this
+even *do* anything on its own - it just describes the cell library and simulation details. But if
+you pull up a terminal and run `charlib run /path/to/this/config/file`, CharLib will ingest this
 configuration file and automatically characterize the cell.
 
 That's not to say that CharLib perfectly automates everything, of course. You still have to write
@@ -202,8 +202,6 @@ Which test arcs are valid depends on the logic that the cell implements. This po
 simple method for identifying valid test configurations: comparing rows of the truth table for the
 cell's logical function.
 
-> TODO: insert image of truth table with rows compared to identify test arcs
-
 CharLib's algorithm for identifying valid test arcs first builds a truth table based on the cell's
 function (which is part of the cell metadata), then steps through the rows of that table to
 identify pairs of rows where changing a single input produces a change in the cell output. This
@@ -246,3 +244,49 @@ cell output (\\(t_{prop}\\)), as well as how long the output takes to change sta
 (\\(t_{trans}\\)). However, as discussed in [part 1](../background/#changing-conditions), we have
 to take lots of measurements with varying \\(t_{slew}\\) and \\(c_{load}\\) in order to get a good
 model.
+
+##### Division of Labor
+
+At this stage, we have a list of standard cells, each of which has a list of test arcs, a list of
+slew rates, and a list of capacitive load values. For each cell, we want to test all combinations
+of these three groups. If you know anything about [combinatorics](https://en.wikipedia.org/wiki/Combinatorics),
+you'll recognize that this quickly balloons into a **lot** of simulations. There isn't a clear way
+to avoid this, unfortunately (but perhaps this points towards an area for future research!).
+However, we can take advantage of the resources available to us: [parallel processing](https://en.wikipedia.org/wiki/Parallel_computing)!
+
+Instead of running each cell one at a time, we can kick off multiple cells at the same time as
+distinct processes. Software on the computer called a "scheduler" decides what order to execute
+these processes in. While all the test arcs, slews, and loads for each cell are still run
+back-to-back (a.k.a "sequentially"), multiple cells can now be characterized at the same time. This
+works even better on modern multi-core processors, which are really multiple processors glued
+together. Each processor core can run multiple programs while other cores are doing their own
+thing. For us, that means more cells can be characterized at once.
+
+> Right now, characterization just gets divided up into a single process per cell. Ideally, it
+should be divvied up into multiple processes per cell as well. Every combination of test arc, slew
+rate, and load could be its own process. That might lead to big efficiency improvements and faster
+characterization! Keep an eye out for this feature in future versions of CharLib.
+
+Now that we've talked through how we're going to break down the processing, let's get into the
+details that actually matter: circuit simulation.
+
+##### Simulation
+
+Let's say I'm a characterization program kicked off by CharLib. I've been handed a [SPICE](https://en.wikipedia.org/wiki/SPICE)
+file that represents a combinational cell's behavioral model, a test arc describing what value
+each input should be set to and which outputs to watch, a capacitive load to place on that output,
+and a slew rate to use for my input signal. Now what?
+
+![Delay simulation inputs before wiring up to harness](../delay_wiring_0.svg "Cool beans, now I've got a bunch of stuff. What do I do with it?")
+
+Well, the first step is to wire up the circuit. CharLib does this by creating a "`Harness`" that
+handles the wiring and can work with any slew rate or load values. If you're particularly
+technically inclined, you can [take a look at the code here](https://github.com/stineje/CharLib/blob/main/charlib/characterizer/Harness.py).
+The `Harness` unpacks the test arc, wiring the inputs and outputs up to voltage sources and load
+capacitors respectively. Nonmasking conditions are also applied at this stage by hooking up logic
+1's to high voltage and logic 0's to ground.
+
+> Note: There are some cases where 0 doesn't map to ground. For simplicity, we're not going to
+worry about that sort of thing. It's pretty rare anyways, but it does happen sometimes.
+
+![Delay simulation circuit connected with wiring harness](../delay_wiring_1.svg "TODO")
