@@ -196,7 +196,7 @@ to logic 1, the OR cell will always output 1. You have to set input B to zero in
 how the OR cell affects a signal on input A. So your test arc is the path from A to Y, with B=0 as
 the nonmasking condition.
 
-> TODO: image of OR gate being tested, with masking and nonmasking conditions shown
+<!-- TODO: image of OR gate being tested, with masking and nonmasking conditions shown -->
 
 Which test arcs are valid depends on the logic that the cell implements. This points to a very
 simple method for identifying valid test configurations: comparing rows of the truth table for the
