@@ -1,5 +1,5 @@
 ---
-title: 'Part 1: Background'
+title: 'CharLib | Part 1: Background'
 date: 2024-08-07T14:16:52-05:00
 categories:
     - laymanized
@@ -63,7 +63,7 @@ Perhaps an analogy will explain this a little better.
 cover up the exterior walls with siding. You can hire an expert stonemason who will build you a
 beautiful natural stone veneer, but the job will take a month, and they charge expensive rates for
 their expertise. Or instead, you can hire a bricklayer who will have the job done by the end of the
-week for a fraction of the cost. 
+week for a fraction of the cost.
 >
 > See the difference here? The stonemason has to work with the shapes of the stone he or she is
 given. The bricklayer doesn't have to worry about that at all - all the bricks have the same
@@ -82,7 +82,7 @@ If that analogy didn't make sense to you, maybe this way of thinking about it wi
 standard cells like Lego bricks: they all have the same height, and they connect in predictable
 ways. They aren't all exactly the same shape. Some are wider than others and some are narrower.
 On their own they aren't very special. But put a bunch of them together, and you can create
-something much more interesting. 
+something much more interesting.
 
 When using standard cells, we don't have to think about physical design problems, such as how
 transistor M1 connects to to transistor M3 with wires that are a few nanometers wide. Instead we
@@ -133,7 +133,7 @@ and light laptop with a retina screen and an M3 processor.
 But in the context of standard cells, we want very specific information. **Standard cell
 characterization is the process of measuring how a cell shapes signals**.
 
-Let's pause and unpack that a bit. What do we mean when we talk about shaping input signals? 
+Let's pause and unpack that a bit. What do we mean when we talk about shaping input signals?
 
 ### A simple example
 
@@ -149,7 +149,7 @@ capacitor, and feed in a signal that slews from 0 to 1 over a very short amount 
 ![buffer input signal plot](../buf_input_rise.png "Let's see how that buffer handles this! (cue maniacal laughter)")
 
 We can expect the output to look exactly the same, right? Well, almost. Reality is a bit more
-complicated than that. Take a look at the simulation results below. 
+complicated than that. Take a look at the simulation results below.
 
 > For completeness: these plots are generated using CharLib with the standard cells in the open
 source [gf180mcu_osu_sc PDK](https://github.com/stineje/globalfoundries-pdk-libs-gf180mcu_osu_sc).
@@ -198,7 +198,7 @@ conditions are shown along the x and y axes, and the delay is plotted on the z-a
 
 ### This isn't as easy as it sounds
 
-Everything we've discussed so far has been in the context of the humble buffer. Like platypuses 
+Everything we've discussed so far has been in the context of the humble buffer. Like platypuses
 (platypi? platypeople?), they don't do much. The moment we start talking about anything more
 complicated, we have problems to solve.
 
@@ -221,7 +221,7 @@ correct state transition. The more states a cell has, the more complex this is.
 - Since we don't know what state the cell will be in after initilization, we have to develop
 procedures to reset each device to a known state *before testing anything*, then perform this reset
 procedure for every test we run.
-- Memory devices have specific timing requirements: 
+- Memory devices have specific timing requirements:
     - Inputs have to be held stable for a particular amount of time before the clock edge. This is
     called the **setup time**, or \\(t_{setup}\\).
     - Inputs also have to be held stable for some amount of time *after* the clock edge. This is
@@ -283,7 +283,7 @@ where we're headed.
 
 Recall how we took our characterization measurements: we fed in a signal with a known slew rate,
 then measured the delay associated with charging a load capacitor. Now we're going to use those
-measurements to estimate delay. 
+measurements to estimate delay.
 
 ![fanout modeled as capacitance](../fanout_modeling.png "The best part is we get to ignore 90% of the circuit.")
 
@@ -303,5 +303,5 @@ long our critical path is. Hooray for STA!
 We've covered a *lot* of information here. If you're still with me, give your brain a minute to
 digest all of that.
 
-Take some time to review what you need. When you feel prepared, move on to part 2. There we'll go
-into detail on the characterization process (coming soon!).
+Take some time to review what you need. When you feel prepared, move on to [part 2](../operation).
+There we'll go into detail on the characterization process.
