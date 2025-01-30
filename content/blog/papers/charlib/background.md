@@ -1,5 +1,5 @@
 ---
-title: 'Part 1: Background'
+title: 'CharLib | Part 1: Background'
 date: 2024-08-07T14:16:52-05:00
 categories:
     - laymanized

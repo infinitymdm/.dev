@@ -1,5 +1,5 @@
 ---
-title: 'Part 2: How it Works'
+title: 'CharLib | Part 2: How it Works'
 date: 2025-01-07T14:16:52-05:00
 categories:
     - laymanized
