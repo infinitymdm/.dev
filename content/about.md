@@ -22,7 +22,7 @@ science fiction), and using tools on things (hopefully constructively).
 - I have spent more money on Lego sets than I care to admit
 - I was once hospitalized in a game of Duck Duck Goose
 - My favorite video game series is Xenoblade Chronicles
-- I can fit 18 grapes in my mouth at once
+- I can fit 18 grapes in my mouth at once <sup>\[[citation needed](https://xkcd.com/285/)\]</sup>
 
 ## What is this website?
 

@@ -43,7 +43,7 @@ In no particular order, the team consists of the following individuals.
 
 | Name              | Brief Bio |
 | ----------------- | --------- |
-| Me!               | You know who I am. Or if you don't you can learn more on the [About page](../../../about). |
+| Me!               | You know who I am. Or if you don't you can learn more on the [About page](/about). |
 | Rahul Tiwari      | Standard cell layout design engineer at Synopsys Hyderabad. |
 | Emon Sarkar       | Grad student (like me!) studying ECE at the University of Waterloo. |
 | Bhanuday Bhardwaj | Researcher in neuromorphic computing at the Center for Development of Advanced Computing (CDAC) in India. |

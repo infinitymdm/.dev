@@ -1,9 +1,11 @@
 baseURL: 'https://infinitymdm.dev/'
-copyright: '© 2024 Marcus Mellor'
+copyright: '© 2026 Marcus Mellor'
 env: 'production'
 languageCode: 'en-us'
 markup:
     goldmark:
+        renderer:
+            unsafe: true
         extensions:
             passthrough:
                 delimiters:
@@ -38,8 +40,8 @@ params:
     description: "Marcus Mellor's website and blog"
     disableSpecial1stPost: false
     homeInfoParams:
-        title: 'Welcome to infinitymdm.dev'
-        content: "Marcus Mellor's blog on technology, research, and other random musings"
+        title: 'Here be a blog'
+        content: "Marcus Mellor's musings on technology, research, and whatever else he feels like"
     showReadingTime: true
     socialIcons:
         - name: 'github'
